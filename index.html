@@ -143,25 +143,46 @@
 
         async function uploadArquivo(file) {
             if (!file) return;
-            document.getElementById("dropZone").innerText = "Enviando arquivo...";
+            const dropZone = document.getElementById("dropZone");
+            dropZone.innerText = "Solicitando autorização...";
 
             try {
-                await fetch(`${API_URL}/arquivos`, {
+                // 1. Solicita a URL de upload diretamente ao Worker (requisição leve de apenas alguns bytes)
+                const resUrl = await fetch(`${API_URL}/arquivos/upload-url`, {
                     method: "POST",
                     headers: {
                         "X-File-Name": encodeURIComponent(file.name),
-                        "Content-Type": file.type || "application/octet-stream",
-                        "Content-Length": file.size.toString()
+                        "X-File-Type": file.type || "application/octet-stream",
+                        "X-File-Size": file.size.toString()
+                    }
+                });
+
+                const dadosUrl = await resUrl.json();
+                if (!resUrl.ok || !dadosUrl.uploadUrl) {
+                    throw new Error(dadosUrl.erro || "Falha ao obter autorização de upload.");
+                }
+
+                dropZone.innerText = `Enviando ${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB)...`;
+
+                // 2. Envia o arquivo DIRETO do navegador para os servidores do Google Drive
+                const uploadRes = await fetch(dadosUrl.uploadUrl, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": file.type || "application/octet-stream"
                     },
                     body: file
                 });
+
+                if (!uploadRes.ok) {
+                    throw new Error("Erro na transferência direta para o Google Drive.");
+                }
+
                 carregarArquivos();
             } catch (e) {
-                alert("Erro ao fazer upload.");
+                alert("Erro no upload: " + e.message);
             }
 
-            // Restaura o visual da zona de Drop
-            document.getElementById("dropZone").innerHTML = `Arraste um arquivo aqui ou clique para selecionar <input type="file" id="fileInput" onchange="uploadArquivo(this.files[0])">`;
+            dropZone.innerHTML = `Arraste um arquivo aqui ou clique para selecionar <input type="file" id="fileInput" onchange="uploadArquivo(this.files[0])">`;
         }
 
         async function baixarArquivo(id, nome) {

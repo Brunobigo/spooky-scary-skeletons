@@ -40,12 +40,13 @@
     <div id="listaNotas">Carregando...</div>
 
     <script>
-        const API_URL = "/api";
+        const API_URL = "https://SEU_WORKER.workers.dev/api"; // Lembre-se de colocar a URL real do Worker
 
         // --- GESTÃO DE ARQUIVOS ---
         async function carregarArquivos() {
             try {
-                const res = await fetch(`${API_URL}/arquivos`);
+                // Ao adicionar "?t=" forçamos adicionalmente o navegador a ignorar o cache local
+                const res = await fetch(`${API_URL}/arquivos?t=${new Date().getTime()}`);
                 const dados = await res.json();
                 const div = document.getElementById("listaArquivos");
 
@@ -58,7 +59,7 @@
                             <span class="data">${new Date(a.createdTime).toLocaleString('pt-BR')}</span>
                         </div>
                         <div class="arquivo-acoes">
-                            <button onclick="baixarArquivo('${a.id}')">Baixar</button>
+                            <button onclick="baixarArquivo('${a.id}', '${a.name}')">Baixar</button>
                             <button onclick="renomearArquivo('${a.id}', '${a.name}')">Renomear</button>
                         </div>
                     </div>`
@@ -81,7 +82,6 @@
             const CHUNK_SIZE = 10 * 1024 * 1024; // Pedaços de 10MB
 
             try {
-                // 1. Obtém URL Resumível do Worker (único request para nosso back-end)
                 const resUrl = await fetch(`${API_URL}/arquivos/upload-url`, {
                     method: "POST",
                     headers: {
@@ -94,7 +94,6 @@
                 const dadosUrl = await resUrl.json();
                 if (!resUrl.ok || !dadosUrl.uploadUrl) throw new Error("Falha na autorização.");
 
-                // 2. Faz o Upload direto em partes para a API do Google (Bypass da Cloudflare)
                 let inicio = 0;
                 while (inicio < file.size) {
                     let fim = Math.min(inicio + CHUNK_SIZE, file.size);
@@ -119,9 +118,9 @@
             dropZone.innerHTML = `Arraste um arquivo aqui ou clique para selecionar <input type="file" id="fileInput" onchange="uploadArquivo(this.files[0])">`;
         }
 
-        // Delegação de Download nativa. Protege a RAM do front-end e esconde os cabeçalhos.
-        function baixarArquivo(id) {
-            window.location.href = `${API_URL}/arquivos/download/${id}`;
+        function baixarArquivo(id, nome) {
+            // Envia o nome do ficheiro para o Worker reconstruir o cabeçalho
+            window.location.href = `${API_URL}/arquivos/download/${id}?filename=${encodeURIComponent(nome)}`;
         }
 
         async function renomearArquivo(id, nomeAtual) {
@@ -139,7 +138,8 @@
         // --- GESTÃO DE ANOTAÇÕES (D1) ---
         async function carregarNotas() {
             try {
-                const res = await fetch(`${API_URL}/anotacoes`);
+                // Bypass de cache local para as anotações também
+                const res = await fetch(`${API_URL}/anotacoes?t=${new Date().getTime()}`);
                 const notas = await res.json();
                 document.getElementById("listaNotas").innerHTML = notas.map(n =>
                     `<div class="bloco"><p>${n.texto}</p><span class="data">${new Date(n.data_criacao).toLocaleString('pt-BR')}</span></div>`

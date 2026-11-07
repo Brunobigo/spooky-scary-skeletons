@@ -5,83 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Administracao marcenaria</title>
+    <title>Administração Marcenaria Puro Tronco</title>
+    <!-- Favicon inserido na raiz -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        textarea {
-            width: 100%;
-            height: 80px;
-            margin-bottom: 10px;
-        }
-
-        button {
-            padding: 10px 20px;
-            cursor: pointer;
-            border: none;
-            background: #ddd;
-            border-radius: 4px;
-        }
-
-        button:hover {
-            background: #ccc;
-        }
-
-        .bloco {
-            background: #f4f4f4;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-        }
-
-        .data {
-            font-size: 0.8em;
-            color: #666;
-            display: block;
-        }
-
-        .arquivo {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .arquivo-info {
-            flex-grow: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .arquivo-acoes button {
-            padding: 5px 10px;
-            margin-left: 5px;
-            font-size: 0.8em;
-        }
-
-        #dropZone {
-            border: 2px dashed #aaa;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            background: #fafafa;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        #dropZone.dragover {
-            background: #e1e1e1;
-            border-color: #333;
-        }
-
-        #fileInput {
-            display: none;
-        }
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; }
+        textarea { width: 100%; height: 80px; margin-bottom: 10px; }
+        button { padding: 10px 20px; cursor: pointer; border: none; background: #ddd; border-radius: 4px; }
+        button:hover { background: #ccc; }
+        .bloco { background: #f4f4f4; padding: 10px; margin-top: 10px; border-radius: 5px; }
+        .data { font-size: 0.8em; color: #666; display: block; margin-top: 4px; }
+        .arquivo { display: flex; justify-content: space-between; align-items: center; }
+        .arquivo-info { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; }
+        .arquivo-acoes button { padding: 5px 10px; margin-left: 5px; font-size: 0.8em; }
+        #dropZone { border: 2px dashed #aaa; padding: 30px; text-align: center; margin-bottom: 20px; border-radius: 5px; background: #fafafa; cursor: pointer; transition: background 0.3s; }
+        #dropZone.dragover { background: #e1e1e1; border-color: #333; }
+        #fileInput { display: none; }
     </style>
 </head>
 
@@ -106,10 +45,18 @@
     <script>
         const API_URL = "/api"; // Substitua pela sua URL real
 
+        // Função utilitária para formatar bytes
+        function formatarTamanho(bytes) {
+            if (!bytes || bytes === "0") return "0 B";
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
         // --- GESTÃO DE ARQUIVOS ---
         async function carregarArquivos() {
             try {
-                // Configuração explícita de "no-store" no client-side + Timestamp
                 const res = await fetch(`${API_URL}/arquivos?t=${new Date().getTime()}`, { cache: 'no-store' });
                 const dados = await res.json();
                 const div = document.getElementById("listaArquivos");
@@ -120,7 +67,7 @@
                     `<div class="bloco arquivo">
                         <div class="arquivo-info">
                             <strong>${a.name}</strong>
-                            <span class="data">${new Date(a.createdTime).toLocaleString('pt-BR')}</span>
+                            <span class="data">${new Date(a.createdTime).toLocaleString('pt-BR')} • ${formatarTamanho(a.size)}</span>
                         </div>
                         <div class="arquivo-acoes">
                             <button onclick="baixarArquivo('${a.id}', '${a.name}')">Baixar</button>
@@ -143,7 +90,9 @@
             if (!file) return;
             const dropZone = document.getElementById("dropZone");
             dropZone.innerText = "Solicitando autorização segura...";
-            const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB
+            
+            // Otimização de Velocidade: Reduzindo requisições HTTP enviando partes de 50MB de cada vez
+            const CHUNK_SIZE = 50 * 1024 * 1024; 
 
             try {
                 const resUrl = await fetch(`${API_URL}/arquivos/upload-url`, {
@@ -176,7 +125,6 @@
 
                 dropZone.innerText = "Sincronizando com o Google Drive...";
 
-                // Delay de 2 segundos para dar tempo dos servidores da Google indexarem o novo arquivo
                 setTimeout(() => {
                     carregarArquivos();
                     dropZone.innerHTML = `Arraste um arquivo aqui ou clique para selecionar <input type="file" id="fileInput" onchange="uploadArquivo(this.files[0])">`;
@@ -193,16 +141,23 @@
         }
 
         async function renomearArquivo(id, nomeAtual) {
-            const novoNome = prompt("Novo nome:", nomeAtual);
-            if (!novoNome || novoNome === nomeAtual) return;
+            // Isola a extensão do nome do arquivo (ex: "projeto.msi" -> "projeto" e ".msi")
+            const indicePonto = nomeAtual.lastIndexOf('.');
+            const nomeBase = indicePonto !== -1 ? nomeAtual.substring(0, indicePonto) : nomeAtual;
+            const extensao = indicePonto !== -1 ? nomeAtual.substring(indicePonto) : "";
+
+            const novoNomeBase = prompt("Novo nome (sem a extensão):", nomeBase);
+            if (!novoNomeBase || novoNomeBase === nomeBase) return;
+
+            // Remonta o nome protegido com a extensão inalterada
+            const novoNomeFinal = novoNomeBase + extensao;
 
             await fetch(`${API_URL}/arquivos/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ novoNome })
+                body: JSON.stringify({ novoNome: novoNomeFinal })
             });
 
-            // Delay de 1.5 segundo para o Google Drive atualizar a meta-tag do nome no servidor de listagem
             setTimeout(() => carregarArquivos(), 1500);
         }
 
@@ -229,5 +184,4 @@
         carregarArquivos();
     </script>
 </body>
-
 </html>

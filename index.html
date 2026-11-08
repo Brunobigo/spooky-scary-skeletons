@@ -12,115 +12,113 @@
         * { box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; padding: 20px; 
+            margin: 0; padding: 10px; 
             background-color: #f0f2f5; 
             color: #333;
-            /* Layout Principal da App (Desktop) */
             display: flex;
-            gap: 20px;
+            gap: 15px;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* Estrutura de Colunas */
         .coluna-esquerda { flex: 3; display: flex; flex-direction: column; overflow: hidden; }
-        .coluna-direita { flex: 1; min-width: 300px; display: flex; flex-direction: column; background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .coluna-direita { flex: 1; min-width: 320px; display: flex; flex-direction: column; background: white; border-radius: 10px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
 
-        /* Em telas menores (Mobile/Tablet), colapsa para uma coluna scrollável */
         @media (max-width: 900px) {
-            body { flex-direction: column; height: auto; overflow: auto; }
+            body { flex-direction: column; height: auto; overflow: auto; padding: 10px; }
             .coluna-esquerda, .coluna-direita { overflow: visible; }
         }
 
-        h1, h2 { margin-top: 0; }
-        button { cursor: pointer; border: none; border-radius: 4px; padding: 8px 12px; transition: background 0.2s; }
+        h1, h2 { margin-top: 0; font-size: 1.3em; }
+        button { cursor: pointer; border: none; border-radius: 4px; transition: background 0.2s; }
         
-        /* --- NAVEGAÇÃO E UPLOAD --- */
-        #menuPastas { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; }
-        #menuPastas button { background: white; border: 1px solid #ccc; font-weight: bold; white-space: nowrap; color: #555; }
+        /* --- NAVEGAÇÃO --- */
+        #menuPastas { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 10px; }
+        #menuPastas button { background: white; border: 1px solid #ccc; font-weight: bold; white-space: nowrap; color: #555; padding: 8px 12px; display: flex; align-items: center; gap: 5px; }
         #menuPastas button:hover { background: #e0e0e0; }
         #menuPastas button.ativo { background: #4CAF50; color: white; border-color: #4CAF50; }
 
-        .acoes-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .btn-upload { background: #1976d2; color: white; font-weight: bold; padding: 10px 15px; border-radius: 6px; }
+        .acoes-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .btn-upload { background: #1976d2; color: white; font-weight: bold; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 5px; }
         .btn-upload:hover { background: #1565c0; }
         #fileInput { display: none; }
 
-        /* Barra de Progresso de Upload */
-        #containerProgresso { display: none; margin-bottom: 15px; background: white; padding: 10px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+        /* Barra de Progresso */
+        #containerProgresso { display: none; margin-bottom: 10px; background: white; padding: 10px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
         .texto-progresso { font-size: 0.85em; font-weight: bold; margin-bottom: 5px; }
         .trilha-progresso { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; }
         .barra-progresso { height: 100%; background: #4CAF50; width: 0%; transition: width 0.3s ease; }
 
-        /* --- ZONA DO GRID DE ARQUIVOS (DRAG & DROP) --- */
+        /* --- ZONA DRAG & DROP E GRID --- */
         #zonaArquivos {
             flex-grow: 1;
             background: white;
             border-radius: 10px;
-            padding: 20px;
+            padding: 10px;
             overflow-y: auto;
-            border: 2px dashed transparent; /* Para o Drag&Drop */
+            border: 2px dashed transparent; 
             transition: border-color 0.2s, background 0.2s;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
         }
         #zonaArquivos.dragover { border-color: #1976d2; background: #e3f2fd; }
 
+        /* Força Grid 5x4 com os itens compactos para mobile */
         #listaArquivos {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Grid Fluido */
-            gap: 15px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            width: 100%;
         }
 
-        /* --- CARDS DO GRID --- */
         .grid-item {
             background: #f9f9f9;
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 6px;
+            padding: 5px;
             text-align: center;
             position: relative;
             display: flex;
             flex-direction: column;
             border: 1px solid #e0e0e0;
-            height: 160px; /* Mais alto para caber o botão verde */
-            user-select: none; /* Proibe seleção de texto/ícones */
+            height: 110px; 
+            user-select: none; 
         }
         
-        .grid-item.pasta { background: #e8f4fd; border-color: #bde0fe; cursor: pointer; justify-content: center; height: 120px; }
-        .grid-item.voltar { background: #f0f0f0; border: 1px dashed #ccc; cursor: pointer; justify-content: center; height: 120px;}
+        .grid-item.pasta { background: #e8f4fd; border-color: #bde0fe; cursor: pointer; justify-content: center; }
+        .grid-item.voltar { background: #f0f0f0; border: 1px dashed #ccc; cursor: pointer; justify-content: center; }
 
-        /* Cabeçalho do Card (Menu e Ícone) */
-        .card-header { display: flex; justify-content: flex-end; width: 100%; height: 24px; margin-bottom: 5px; }
+        .card-header { display: flex; justify-content: flex-end; width: 100%; height: 20px; }
         
-        /* Menu Kebab modificado */
+        /* Menu Kebab */
         .menu-kebab { position: relative; }
-        .menu-kebab-btn { background: transparent; color: #777; font-size: 1.4em; padding: 0 5px; height: 24px; line-height: 20px; font-weight: bold; border-radius: 5px; }
+        .menu-kebab-btn { background: transparent; color: #777; font-size: 1.2em; padding: 0 5px; line-height: 15px; font-weight: bold; border-radius: 4px; margin-bottom: 2px; }
         .menu-kebab-btn:hover { background: #e0e0e0; }
         
         .dropdown-content {
             display: none;
             position: absolute;
             right: 0;
-            top: 25px;
+            top: 20px;
             background-color: white;
-            min-width: 100px;
+            min-width: 140px; /* Alargado */
             box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
             z-index: 10;
             border-radius: 6px;
             border: 1px solid #ccc;
         }
-        /* O menu SÓ abre quando o botão é clicado (via classe 'show' gerida no JS) */
         .dropdown-content.show { display: block; }
         
-        .dropdown-content button { color: #333; padding: 10px; width: 100%; background: none; text-align: left; font-size: 0.9em; border-radius: 0; }
+        .dropdown-content button { color: #333; padding: 10px; width: 100%; background: none; text-align: left; font-size: 0.9em; border-radius: 0; display: flex; align-items: center; gap: 8px;}
         .dropdown-content button:hover { background-color: #f1f1f1; }
 
-        /* Corpo do Card */
-        .file-icon { font-size: 2.8em; margin-bottom: 8px; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
+        /* Ícones e Texto nos Cards */
+        .file-icon { flex-grow: 1; display: flex; align-items: center; justify-content: center; margin-bottom: 2px; }
+        .img-icone { max-height: 32px; max-width: 32px; object-fit: contain; }
         
-        /* Afastamento entre os dados e o topo */
-        .file-info-container { margin-top: auto; padding-bottom: 5px; }
+        .file-info-container { margin-top: auto; padding-bottom: 2px; }
         .file-name {
-            font-size: 0.75em;
+            font-size: 0.65em;
             font-weight: bold;
             word-break: break-word;
             display: -webkit-box;
@@ -128,40 +126,47 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
             width: 100%;
-            margin-bottom: 3px;
+            line-height: 1.1;
+            margin-bottom: 2px;
         }
-        .file-meta { font-size: 0.65em; color: #777; }
 
         /* Botão Download Verde Militar */
         .btn-download-card {
-            background-color: #4b5320; /* Verde Militar */
-            color: white;
+            background-color: #4b5320; 
             width: 100%;
-            padding: 6px 0;
-            margin-top: 8px;
+            height: 22px;
+            margin-top: auto;
             border-radius: 4px;
-            font-size: 0.75em;
-            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .btn-download-card:hover { background-color: #3a4019; }
 
-        #paginacao { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; }
-        #paginacao button:disabled { opacity: 0.4; cursor: not-allowed; }
+        .controles-paginacao { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: auto; padding-top: 10px; font-size: 0.85em; font-weight: bold;}
+        .controles-paginacao button { padding: 4px 12px; background: #e0e0e0; color: #333; }
+        .controles-paginacao button:disabled { opacity: 0.4; cursor: not-allowed; }
 
         /* --- COLUNA DIREITA: ANOTAÇÕES --- */
-        .box-nova-nota { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .btn-salvar-nota { background: #4CAF50; color: white; font-weight: bold; }
+        .box-nova-nota { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        textarea { width: 100%; height: 60px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; resize: none;}
+        .linha-acoes-nota { display: flex; gap: 10px; align-items: center; }
+        
+        input[type="color"] { border: none; width: 35px; height: 35px; border-radius: 4px; cursor: pointer; padding: 0; background: none;}
+        .btn-salvar-nota { background: #4CAF50; color: white; font-weight: bold; flex-grow: 1; padding: 8px; display: flex; align-items: center; justify-content: center; gap: 5px;}
         .btn-salvar-nota:hover { background: #45a049; }
         
-        #listaNotas { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .nota-item { background: #f9f9f9; padding: 12px; border-radius: 8px; border-left: 4px solid #fbc02d; font-size: 0.9em; position: relative; }
-        .nota-texto { margin: 0 0 8px 0; white-space: pre-wrap; word-break: break-word; }
+        #listaNotas { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+        .nota-item { background: #f9f9f9; padding: 10px 10px 10px 15px; border-radius: 6px; border-left: 5px solid #fbc02d; font-size: 0.85em; position: relative; }
+        .nota-texto { margin: 0 0 5px 0; white-space: pre-wrap; word-break: break-word; }
         
-        /* Ações da nota no canto superior direito */
-        .nota-acoes { position: absolute; top: 8px; right: 8px; display: flex; gap: 5px; }
-        .nota-acoes button { padding: 4px 8px; font-size: 0.75em; background: #e0e0e0; color: #333; }
-        .nota-acoes button.btn-del { background: #ffcdd2; color: #c62828; }
-        .nota-acoes button:hover { opacity: 0.8; }
+        /* Ações da nota */
+        .nota-acoes { position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; }
+        .nota-acoes button { padding: 4px; background: transparent; }
+        .nota-acoes button:hover { background: #e0e0e0; }
+
+        .data { font-size: 0.8em; color: #888; }
+        .btn-img-pequeno { height: 14px; object-fit: contain; }
     </style>
 </head>
 
@@ -170,32 +175,28 @@
     <div class="coluna-esquerda">
         <h1>Oficina Puro Tronco</h1>
         
-        <!-- Menu Dinâmico -->
         <div id="menuPastas">Buscando pastas...</div>
 
-        <!-- Ações do Topo -->
         <div class="acoes-topo">
             <h2 style="margin: 0;" id="tituloPasta">Documentos</h2>
-            <!-- Input escondido, acionado pelo botão ou Drag&Drop -->
             <input type="file" id="fileInput" onchange="uploadArquivo(this.files[0])">
-            <button class="btn-upload" onclick="document.getElementById('fileInput').click()">+ Enviar Arquivo</button>
+            <button class="btn-upload" onclick="document.getElementById('fileInput').click()">
+                <img src="assets/upload.webp" class="btn-img-pequeno"> Enviar Arquivo
+            </button>
         </div>
 
-        <!-- Feedback de Upload Visual -->
         <div id="containerProgresso">
             <div class="texto-progresso" id="textoProgresso">Preparando...</div>
             <div class="trilha-progresso"><div class="barra-progresso" id="barraProgresso"></div></div>
         </div>
 
-        <!-- Zona Drag & Drop (Engloba o Grid inteiro) -->
         <div id="zonaArquivos" 
             ondragover="event.preventDefault(); this.classList.add('dragover')"
             ondragleave="this.classList.remove('dragover')" 
             ondrop="soltarArquivo(event)">
             
             <div id="listaArquivos">Aguardando seleção de pasta...</div>
-            <div id="paginacao"></div>
-            
+            <div id="paginacaoArquivos" class="controles-paginacao"></div>
         </div>
     </div>
 
@@ -203,38 +204,45 @@
         <h2>Anotações</h2>
         <div class="box-nova-nota">
             <textarea id="textoNota" placeholder="Escreva uma nova anotação..."></textarea>
-            <button class="btn-salvar-nota" onclick="salvarNota()">Salvar Anotação</button>
+            <div class="linha-acoes-nota">
+                <input type="color" id="corNota" value="#fbc02d" title="Cor da Anotação">
+                <button class="btn-salvar-nota" onclick="salvarNota()">
+                    <img src="assets/salvar.webp" class="btn-img-pequeno"> Salvar Anotação
+                </button>
+            </div>
         </div>
         <div id="listaNotas">Carregando anotações...</div>
+        <div id="paginacaoNotas" class="controles-paginacao"></div>
     </div>
 
     <script>
         const API_URL = "/api"; 
         
-        // ESTADO PASTAS
+        // ESTADO PASTAS E GRID (20 por página para o grid 5x4)
         let pastasRaiz = [];
         let historicoNavegacao = []; 
         let pastaAtualId = "";
         let pastaAtualNome = "Documentos";
-
-        // ESTADO GRID
         let listaConteudoAtual = [];
         let paginaAtual = 1;
-        const ITENS_POR_PAGINA = 16;
+        const ITENS_POR_PAGINA = 20;
 
-        // FECHAR MENUS ABERTOS AO CLICAR FORA
+        // ESTADO NOTAS (6 por página)
+        let notasAtuais = [];
+        let paginaNotas = 1;
+        const NOTAS_POR_PAGINA = 6;
+        const notasExpandidas = {};
+
+        // FECHAR MENUS
         document.addEventListener('click', function(event) {
             if (!event.target.matches('.menu-kebab-btn')) {
                 const dropdowns = document.getElementsByClassName("dropdown-content");
                 for (let i = 0; i < dropdowns.length; i++) {
-                    if (dropdowns[i].classList.contains('show')) {
-                        dropdowns[i].classList.remove('show');
-                    }
+                    if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
                 }
             }
         });
 
-        // Alterna a visibilidade do menu específico
         function toggleMenu(idElemento) {
             const menus = document.getElementsByClassName("dropdown-content");
             for (let i = 0; i < menus.length; i++) {
@@ -243,61 +251,63 @@
             document.getElementById(idElemento).classList.toggle("show");
         }
 
-        function formatarTamanho(bytes) {
-            if (!bytes || bytes === "0") return "0 B";
-            const k = 1024;
-            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
-        // Dicionário visual de ícones por extensão
+        // MAPEAMENTO DOS ÍCONES DA PASTA ASSETS
         function getIconeArquivo(nome, mimeType) {
+            if (mimeType === 'application/vnd.google-apps.folder') {
+                if (nome.toLowerCase().includes('usinagem')) return 'assets/usinagem.webp';
+                return 'assets/pasta.webp';
+            }
             const ext = nome.split('.').pop().toLowerCase();
-            if (['pdf'].includes(ext)) return '📕'; // PDF Vermelho
-            if (['dxf', 'dwg'].includes(ext)) return '📐'; // CAD
-            if (['tap', 'nc', 'cnc', 'gcode'].includes(ext)) return '⚙️'; // Usinagem
-            if (['stl', 'obj'].includes(ext)) return '🧊'; // 3D
-            if (['jpg', 'jpeg', 'png', 'svg', 'webp'].includes(ext)) return '🖼️'; // Imagens
-            if (['mp4', 'mkv', 'avi'].includes(ext)) return '🎬'; // Videos
-            if (['zip', 'rar', '7z'].includes(ext)) return '📦'; // Compactados
-            if (['txt', 'doc', 'docx'].includes(ext)) return '📝'; // Texto
-            if (['xls', 'xlsx', 'csv'].includes(ext)) return '📊'; // Planilhas
-            return '📄'; // Padrão genérico
+            if (['pdf'].includes(ext)) return 'assets/ficheiro-pdf.webp';
+            if (['dxf', 'dwg'].includes(ext)) return 'assets/Aspire.webp';
+            if (['tap', 'nc', 'cnc', 'gcode'].includes(ext)) return 'assets/arquivo-gcode.webp';
+            if (['stl', 'obj'].includes(ext)) return 'assets/arquivo-tool.webp';
+            if (['jpg', 'jpeg', 'png', 'svg', 'webp'].includes(ext)) return 'assets/imagens-foto-printscreen.webp';
+            if (['mp4', 'mkv', 'avi'].includes(ext)) return 'assets/videos.webp';
+            if (['zip', 'rar', '7z'].includes(ext)) return 'assets/zip-rar.webp';
+            if (['txt'].includes(ext)) return 'assets/texto.webp';
+            if (['doc', 'docx'].includes(ext)) return 'assets/arquivo-word.webp';
+            if (['xls', 'xlsx', 'csv'].includes(ext)) return 'assets/arquivo-xls-xlsx-csv.webp';
+            if (['ppt', 'pptx'].includes(ext)) return 'assets/arquivo-powerpoint.webp';
+            if (['html'].includes(ext)) return 'assets/html.webp';
+            if (['js'].includes(ext)) return 'assets/arquivo-js.webp';
+            if (['css'].includes(ext)) return 'assets/arquivo-css.webp';
+            if (['exe', 'msi'].includes(ext)) return 'assets/arquivo-exe-msi.webp';
+            if (['bat', 'cmd'].includes(ext)) return 'assets/arquivo-cmd-bat.webp';
+            if (['ps1'].includes(ext)) return 'assets/arquivo-powersheel.webp';
+            if (['vbs'].includes(ext)) return 'assets/arquivo-vbs.webp';
+            if (['ttf', 'otf'].includes(ext)) return 'assets/fonte.webp';
+            if (['sh'].includes(ext)) return 'assets/script.webp';
+            
+            return 'assets/texto.webp'; // Padrão genérico
         }
 
-        // --- INICIALIZAÇÃO E MENUS ---
+        // --- SISTEMA DE PASTAS E ARQUIVOS ---
         async function inicializarPastas() {
             try {
                 const res = await fetch(`${API_URL}/arquivos?t=${new Date().getTime()}`, { cache: 'no-store' });
                 const dados = await res.json();
                 
                 pastasRaiz = dados.files.filter(f => f.mimeType === 'application/vnd.google-apps.folder' && f.name.startsWith('_'));
-                
-                // ORDENAÇÃO: _Usinagem sempre no topo/início
                 pastasRaiz.sort((a, b) => {
                     if (a.name === '_Usinagem') return -1;
                     if (b.name === '_Usinagem') return 1;
                     return a.name.localeCompare(b.name);
                 });
 
-                if (pastasRaiz.length > 0) {
-                    abrirPastaRaiz(pastasRaiz[0].id, pastasRaiz[0].name);
-                }
+                if (pastasRaiz.length > 0) abrirPastaRaiz(pastasRaiz[0].id, pastasRaiz[0].name);
             } catch (e) {
                 document.getElementById("menuPastas").innerHTML = "Erro ao buscar pastas.";
             }
         }
 
         function renderizarMenuPastas() {
-            const divMenu = document.getElementById("menuPastas");
-            divMenu.innerHTML = pastasRaiz.map(p => 
+            document.getElementById("menuPastas").innerHTML = pastasRaiz.map(p => 
                 `<button class="${p.id === pastaAtualId && historicoNavegacao.length === 0 ? 'ativo' : ''}" 
                          onclick="abrirPastaRaiz('${p.id}', '${p.name}')">
-                    📁 ${p.name.replace('_', '')} 
+                    <img src="${getIconeArquivo(p.name, 'application/vnd.google-apps.folder')}" class="btn-img-pequeno"> ${p.name.replace('_', '')} 
                 </button>`
             ).join("");
-            
             document.getElementById("tituloPasta").innerText = pastaAtualNome.replace('_', '');
         }
 
@@ -328,16 +338,10 @@
 
         async function carregarConteudoPasta() {
             const div = document.getElementById("listaArquivos");
-            const pagDiv = document.getElementById("paginacao");
-            
-            div.style.display = "block";
-            div.innerHTML = "Carregando arquivos...";
-            pagDiv.innerHTML = "";
-
+            div.innerHTML = "Carregando...";
             try {
                 const res = await fetch(`${API_URL}/arquivos?folderId=${pastaAtualId}&t=${new Date().getTime()}`, { cache: 'no-store' });
                 const dados = await res.json();
-                
                 listaConteudoAtual = dados.files || [];
                 paginaAtual = 1;
                 renderizarGridPagina();
@@ -348,8 +352,7 @@
 
         function renderizarGridPagina() {
             const div = document.getElementById("listaArquivos");
-            const pagDiv = document.getElementById("paginacao");
-            
+            const pagDiv = document.getElementById("paginacaoArquivos");
             let arrayManipulado = [...listaConteudoAtual];
 
             if (historicoNavegacao.length > 0) {
@@ -359,13 +362,12 @@
 
             if (arrayManipulado.length === 0) {
                 div.style.display = "block";
-                div.innerHTML = "Esta pasta está vazia. Arraste arquivos para cá.";
+                div.innerHTML = "Pasta vazia.";
                 pagDiv.innerHTML = "";
                 return;
             }
 
             div.style.display = "grid";
-
             const totalPaginas = Math.ceil(arrayManipulado.length / ITENS_POR_PAGINA);
             const start = (paginaAtual - 1) * ITENS_POR_PAGINA;
             const itensDestaPagina = arrayManipulado.slice(start, start + ITENS_POR_PAGINA);
@@ -374,7 +376,7 @@
                 if (a.isVoltar) {
                     return `
                         <div class="grid-item voltar" onclick="voltarPasta()">
-                            <div class="file-icon">🔙</div>
+                            <div class="file-icon"><span style="font-size:24px;">🔙</span></div>
                             <div class="file-name">Voltar</div>
                         </div>`;
                 }
@@ -382,37 +384,36 @@
                 if (a.mimeType === 'application/vnd.google-apps.folder') {
                     return `
                         <div class="grid-item pasta" onclick="entrarSubpasta('${a.id}', '${a.name}')">
-                            <div class="file-icon">📁</div>
+                            <div class="file-icon"><img src="${getIconeArquivo(a.name, a.mimeType)}" class="img-icone"></div>
                             <div class="file-name" title="${a.name}">${a.name}</div>
                         </div>`;
                 } 
                 
-                // Card de Arquivo com Ícones inteligentes e Botão verde no rodapé
                 return `
                     <div class="grid-item">
                         <div class="card-header">
                             <div class="menu-kebab">
                                 <button onclick="toggleMenu('drop_${a.id}')" class="menu-kebab-btn">⋮</button>
                                 <div id="drop_${a.id}" class="dropdown-content">
-                                    <button onclick="renomearArquivo('${a.id}', '${a.name}')">Renomear</button>
-                                    <!-- Espaço para adicionar Deletar no futuro se precisar -->
+                                    <button onclick="renomearArquivo('${a.id}', '${a.name}')"><img src="assets/editar-arquivo.webp" class="btn-img-pequeno"> Renomear</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="file-icon">${getIconeArquivo(a.name, a.mimeType)}</div>
+                        <div class="file-icon"><img src="${getIconeArquivo(a.name, a.mimeType)}" class="img-icone"></div>
                         <div class="file-info-container">
                             <div class="file-name" title="${a.name}">${a.name}</div>
-                            <div class="file-meta">${formatarTamanho(a.size)}</div>
                         </div>
-                        <button class="btn-download-card" onclick="baixarArquivo('${a.id}', '${a.name}')">⬇ Baixar</button>
+                        <button class="btn-download-card" onclick="baixarArquivo('${a.id}', '${a.name}')">
+                            <img src="assets/download.webp" class="btn-img-pequeno">
+                        </button>
                     </div>`;
             }).join("");
 
             if (totalPaginas > 1) {
                 pagDiv.innerHTML = `
-                    <button onclick="mudarPagina(-1)" ${paginaAtual === 1 ? 'disabled' : ''}>Anterior</button>
-                    <span>Página ${paginaAtual} de ${totalPaginas}</span>
-                    <button onclick="mudarPagina(1)" ${paginaAtual === totalPaginas ? 'disabled' : ''}>Próxima</button>
+                    <button onclick="mudarPagina(-1)" ${paginaAtual === 1 ? 'disabled' : ''}>⬅</button>
+                    <span>${paginaAtual} / ${totalPaginas}</span>
+                    <button onclick="mudarPagina(1)" ${paginaAtual === totalPaginas ? 'disabled' : ''}>➡</button>
                 `;
             } else {
                 pagDiv.innerHTML = "";
@@ -424,7 +425,7 @@
             renderizarGridPagina();
         }
 
-        // --- UPLOAD DRAG & DROP E BARRA VISUAL ---
+        // --- UPLOAD E AÇÕES DE ARQUIVO ---
         function soltarArquivo(e) {
             e.preventDefault();
             document.getElementById("zonaArquivos").classList.remove('dragover');
@@ -433,14 +434,13 @@
 
         async function uploadArquivo(file) {
             if (!file) return;
-            
             const pBox = document.getElementById("containerProgresso");
             const pText = document.getElementById("textoProgresso");
             const pBar = document.getElementById("barraProgresso");
             
             pBox.style.display = "block";
             pBar.style.width = "0%";
-            pText.innerText = `Preparando upload de ${file.name}...`;
+            pText.innerText = `Enviando ${file.name}...`;
             
             const CHUNK_SIZE = 50 * 1024 * 1024; 
 
@@ -455,7 +455,7 @@
                 });
 
                 const dadosUrl = await resUrl.json();
-                if (!resUrl.ok || !dadosUrl.uploadUrl) throw new Error("Falha na autorização.");
+                if (!resUrl.ok || !dadosUrl.uploadUrl) throw new Error("Falha.");
 
                 let inicio = 0;
                 while (inicio < file.size) {
@@ -477,13 +477,8 @@
                 }
 
                 pBar.style.width = "100%";
-                pText.innerText = "Salvando no Google Drive...";
-
-                setTimeout(() => {
-                    pBox.style.display = "none";
-                    carregarConteudoPasta(); 
-                }, 2000);
-
+                pText.innerText = "Salvando...";
+                setTimeout(() => { pBox.style.display = "none"; carregarConteudoPasta(); }, 2000);
             } catch (e) {
                 alert("Erro no upload: " + e.message);
                 pBox.style.display = "none";
@@ -498,61 +493,119 @@
             const indicePonto = nomeAtual.lastIndexOf('.');
             const nomeBase = indicePonto !== -1 ? nomeAtual.substring(0, indicePonto) : nomeAtual;
             const extensao = indicePonto !== -1 ? nomeAtual.substring(indicePonto) : "";
-
-            const novoNomeBase = prompt("Novo nome (sem a extensão):", nomeBase);
+            const novoNomeBase = prompt("Novo nome:", nomeBase);
             if (!novoNomeBase || novoNomeBase === nomeBase) return;
-
-            const novoNomeFinal = novoNomeBase + extensao;
-
+            
             await fetch(`${API_URL}/arquivos/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ novoNome: novoNomeFinal })
+                body: JSON.stringify({ novoNome: novoNomeBase + extensao })
             });
-
             setTimeout(() => carregarConteudoPasta(), 1500);
         }
 
-        // --- GESTÃO DE ANOTAÇÕES AVANÇADA (D1) ---
+        // --- SISTEMA DE ANOTAÇÕES (COM COR, TRUNCAMENTO E PAGINAÇÃO) ---
         async function carregarNotas() {
             try {
                 const res = await fetch(`${API_URL}/anotacoes?t=${new Date().getTime()}`, { cache: 'no-store' });
-                const notas = await res.json();
-                document.getElementById("listaNotas").innerHTML = notas.map(n =>
-                    `<div class="nota-item">
-                        <div class="nota-acoes">
-                            <button onclick="editarNota(${n.id}, \`${n.texto.replace(/`/g, "'")}\`)">Editar</button>
-                            <button class="btn-del" onclick="excluirNota(${n.id})">X</button>
-                        </div>
-                        <p class="nota-texto">${n.texto}</p>
-                        <span class="data">${new Date(n.data_criacao).toLocaleString('pt-BR')}</span>
-                    </div>`
-                ).join("");
+                const notasBrutas = await res.json();
+                
+                // Desempacota o JSON da Cor (garantindo compatibilidade com notas antigas)
+                notasAtuais = notasBrutas.map(n => {
+                    let objData = { texto: n.texto, cor: "#fbc02d" };
+                    try {
+                        const parsing = JSON.parse(n.texto);
+                        if (parsing.texto) objData = parsing;
+                    } catch(e) {}
+                    return { id: n.id, texto: objData.texto, cor: objData.cor, data: n.data_criacao };
+                });
+                renderizarNotas();
             } catch (e) { document.getElementById("listaNotas").innerText = "Erro ao carregar notas."; }
+        }
+
+        function alternarNota(id) {
+            notasExpandidas[id] = !notasExpandidas[id];
+            renderizarNotas();
+        }
+
+        function renderizarNotas() {
+            const container = document.getElementById("listaNotas");
+            const pagContainer = document.getElementById("paginacaoNotas");
+            
+            const totalPaginas = Math.ceil(notasAtuais.length / NOTAS_POR_PAGINA);
+            const start = (paginaNotas - 1) * NOTAS_POR_PAGINA;
+            const notasExibidas = notasAtuais.slice(start, start + NOTAS_POR_PAGINA);
+
+            container.innerHTML = notasExibidas.map(n => {
+                const limite = 70;
+                let textoExibicao = n.texto;
+                let isLongo = n.texto.length > limite;
+                let expandido = notasExpandidas[n.id];
+
+                if (isLongo && !expandido) {
+                    textoExibicao = n.texto.substring(0, limite) + "... <strong style='cursor:pointer; color:#1976d2' onclick='alternarNota(${n.id})'>Ler mais</strong>";
+                } else if (isLongo && expandido) {
+                    textoExibicao = n.texto + " <strong style='cursor:pointer; color:#1976d2' onclick='alternarNota(${n.id})'>Ocultar</strong>";
+                }
+
+                return `
+                <div class="nota-item" style="border-left-color: ${n.cor}">
+                    <div class="nota-acoes">
+                        <button onclick="editarNota(${n.id}, \`${n.texto.replace(/`/g, "'")}\`, '${n.cor}')"><img src="assets/editar-arquivo.webp" class="btn-img-pequeno"></button>
+                        <button onclick="excluirNota(${n.id})"><img src="assets/excluir.webp" class="btn-img-pequeno"></button>
+                    </div>
+                    <p class="nota-texto">${textoExibicao}</p>
+                    <span class="data">${new Date(n.data).toLocaleString('pt-BR')}</span>
+                </div>`;
+            }).join("");
+
+            if (totalPaginas > 1) {
+                pagContainer.innerHTML = `
+                    <button onclick="mudarPaginaNotas(-1)" ${paginaNotas === 1 ? 'disabled' : ''}>⬅</button>
+                    <span>${paginaNotas} / ${totalPaginas}</span>
+                    <button onclick="mudarPaginaNotas(1)" ${paginaNotas === totalPaginas ? 'disabled' : ''}>➡</button>
+                `;
+            } else {
+                pagContainer.innerHTML = "";
+            }
+        }
+
+        function mudarPaginaNotas(delta) {
+            paginaNotas += delta;
+            renderizarNotas();
         }
 
         async function salvarNota() {
             const texto = document.getElementById("textoNota").value;
+            const cor = document.getElementById("corNota").value;
             if (!texto) return alert("Digite algo!");
-            const res = await fetch(`${API_URL}/anotacoes`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ texto: texto }) });
+            
+            const pacote = JSON.stringify({ texto: texto, cor: cor });
+
+            const res = await fetch(`${API_URL}/anotacoes`, { 
+                method: "POST", 
+                headers: { "Content-Type": "application/json" }, 
+                body: JSON.stringify({ texto: pacote }) 
+            });
             if (res.ok) { document.getElementById("textoNota").value = ""; carregarNotas(); }
-            else alert("Erro ao salvar nota.");
         }
 
-        async function editarNota(id, textoAtual) {
+        async function editarNota(id, textoAtual, corAtual) {
             const novoTexto = prompt("Edite sua anotação:", textoAtual);
             if (!novoTexto || novoTexto === textoAtual) return;
+
+            const pacote = JSON.stringify({ texto: novoTexto, cor: corAtual });
 
             const res = await fetch(`${API_URL}/anotacoes/${id}`, { 
                 method: "PUT", 
                 headers: { "Content-Type": "application/json" }, 
-                body: JSON.stringify({ texto: novoTexto }) 
+                body: JSON.stringify({ texto: pacote }) 
             });
             if (res.ok) carregarNotas();
         }
 
         async function excluirNota(id) {
-            if (!confirm("Tem certeza que deseja excluir esta anotação?")) return;
+            if (!confirm("Tem certeza que deseja excluir?")) return;
             const res = await fetch(`${API_URL}/anotacoes/${id}`, { method: "DELETE" });
             if (res.ok) carregarNotas();
         }

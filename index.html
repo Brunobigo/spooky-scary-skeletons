@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +14,6 @@
         .bloco { background: #f4f4f4; padding: 10px; margin-top: 10px; border-radius: 5px; }
         .data { font-size: 0.8em; color: #666; display: block; margin-top: 4px; }
         
-        /* Menu de Pastas Horizontal */
         #menuPastas { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 5px; }
         #menuPastas button { padding: 10px 15px; border: 1px solid #ccc; background: #f9f9f9; border-radius: 5px; font-weight: bold; white-space: nowrap; color: #333; }
         #menuPastas button:hover { background: #e0e0e0; }
@@ -25,7 +23,6 @@
         #dropZone.dragover { background: #e1e1e1; border-color: #333; }
         #fileInput { display: none; }
 
-        /* NOVO: Layout em Grid 4x4 */
         #listaArquivos {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -33,7 +30,6 @@
             margin-bottom: 20px;
         }
 
-        /* Responsividade para telas de telemóvel */
         @media (max-width: 500px) { #listaArquivos { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 400px) { #listaArquivos { grid-template-columns: repeat(2, 1fr); } }
 
@@ -69,7 +65,6 @@
         }
         .file-meta { font-size: 0.65em; color: #666; }
 
-        /* NOVO: Menu 3 pontinhos (Kebab Menu) */
         .menu-kebab { position: absolute; top: 2px; right: 2px; outline: none; }
         .menu-kebab-btn { background: none; border: none; font-size: 1.2em; cursor: pointer; color: #777; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
         .menu-kebab-btn:hover { background: #e0e0e0; color: #333; }
@@ -101,11 +96,9 @@
         }
         .dropdown-content button:hover { background-color: #f1f1f1; }
         
-        /* Aparece ao passar o rato ou ao clicar (focus) no mobile */
         .menu-kebab:hover .dropdown-content,
         .menu-kebab:focus-within .dropdown-content { display: block; }
 
-        /* NOVO: Paginação */
         #paginacao { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px; }
         #paginacao button { padding: 8px 15px; }
         #paginacao button:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -129,7 +122,7 @@
     </div>
     
     <div id="listaArquivos">Aguardando seleção de pasta...</div>
-    <div id="paginacao"></div> <!-- Container da Paginação -->
+    <div id="paginacao"></div>
 
     <h2>Anotações Salvas</h2>
     <div id="listaNotas">Carregando...</div>
@@ -137,13 +130,11 @@
     <script>
         const API_URL = "/api"; 
         
-        // --- ESTADO GERAL E PAGINAÇÃO ---
         let pastasRaiz = [];
         let historicoNavegacao = []; 
         let pastaAtualId = "";
         let pastaAtualNome = "";
 
-        // Variáveis do Grid
         let listaConteudoAtual = [];
         let paginaAtual = 1;
         const ITENS_POR_PAGINA = 16;
@@ -156,7 +147,6 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        // --- INICIALIZAÇÃO E MENUS ---
         async function inicializarPastas() {
             try {
                 const res = await fetch(`${API_URL}/arquivos?t=${new Date().getTime()}`, { cache: 'no-store' });
@@ -190,7 +180,6 @@
             document.getElementById("dropZone").innerHTML = `Arraste um arquivo para <b>${pastaAtualNome}</b> ou clique para selecionar <input type="file" id="fileInput" onchange="uploadArquivo(this.files[0])">`;
         }
 
-        // --- NAVEGAÇÃO DE PASTAS ---
         function abrirPastaRaiz(id, nome) {
             historicoNavegacao = [];
             pastaAtualId = id;
@@ -220,7 +209,7 @@
             const div = document.getElementById("listaArquivos");
             const pagDiv = document.getElementById("paginacao");
             
-            div.style.display = "block"; // Reset para a mensagem de loading
+            div.style.display = "block";
             div.innerHTML = "Carregando conteúdo...";
             pagDiv.innerHTML = "";
 
@@ -229,7 +218,7 @@
                 const dados = await res.json();
                 
                 listaConteudoAtual = dados.files || [];
-                paginaAtual = 1; // Reseta a página sempre que troca de pasta
+                paginaAtual = 1;
                 
                 renderizarGridPagina();
             } catch (e) {
@@ -237,14 +226,12 @@
             }
         }
 
-        // --- NOVO: LÓGICA DO GRID E PAGINAÇÃO ---
         function renderizarGridPagina() {
             const div = document.getElementById("listaArquivos");
             const pagDiv = document.getElementById("paginacao");
             
             let arrayManipulado = [...listaConteudoAtual];
 
-            // Se estamos numa subpasta, inserimos o botão "Voltar" como se fosse o primeiro item do Array
             if (historicoNavegacao.length > 0) {
                 const nomePai = historicoNavegacao[historicoNavegacao.length - 1].nome;
                 arrayManipulado.unshift({ isVoltar: true, nomePai: nomePai });
@@ -257,7 +244,6 @@
                 return;
             }
 
-            // Ativa o Grid
             div.style.display = "grid";
 
             const totalPaginas = Math.ceil(arrayManipulado.length / ITENS_POR_PAGINA);
@@ -265,7 +251,6 @@
             const itensDestaPagina = arrayManipulado.slice(start, start + ITENS_POR_PAGINA);
 
             div.innerHTML = itensDestaPagina.map(a => {
-                // Card de Voltar
                 if (a.isVoltar) {
                     return `
                         <div class="grid-item voltar" onclick="voltarPasta()">
@@ -275,7 +260,6 @@
                         </div>`;
                 }
 
-                // Card de Pasta
                 if (a.mimeType === 'application/vnd.google-apps.folder') {
                     return `
                         <div class="grid-item pasta" onclick="entrarSubpasta('${a.id}', '${a.name}')">
@@ -285,7 +269,6 @@
                         </div>`;
                 } 
                 
-                // Card de Ficheiro (com Kebab Menu)
                 return `
                     <div class="grid-item">
                         <div class="menu-kebab" tabindex="0">
@@ -301,7 +284,6 @@
                     </div>`;
             }).join("");
 
-            // Controles de Paginação
             if (totalPaginas > 1) {
                 pagDiv.innerHTML = `
                     <button onclick="mudarPagina(-1)" ${paginaAtual === 1 ? 'disabled' : ''}>⬅ Anterior</button>
@@ -318,7 +300,6 @@
             renderizarGridPagina();
         }
 
-        // --- UPLOAD E AÇÕES ---
         async function uploadArquivo(file) {
             if (!file) return;
             const dropZone = document.getElementById("dropZone");
@@ -326,13 +307,13 @@
             const CHUNK_SIZE = 50 * 1024 * 1024; 
 
             try {
-                const resUrl = await fetch(`${API_URL}/arquivos/upload-url`, {
+                // CORREÇÃO: folderId passado no URL em vez do cabeçalho X-Folder-Id
+                const resUrl = await fetch(`${API_URL}/arquivos/upload-url?folderId=${pastaAtualId}`, {
                     method: "POST",
                     headers: {
                         "X-File-Name": encodeURIComponent(file.name),
                         "X-File-Type": file.type || "application/octet-stream",
-                        "X-File-Size": file.size.toString(),
-                        "X-Folder-Id": pastaAtualId
+                        "X-File-Size": file.size.toString()
                     }
                 });
 
@@ -391,7 +372,6 @@
             setTimeout(() => carregarConteudoPasta(), 1500);
         }
 
-        // --- GESTÃO DE ANOTAÇÕES (D1) ---
         async function carregarNotas() {
             try {
                 const res = await fetch(`${API_URL}/anotacoes?t=${new Date().getTime()}`, { cache: 'no-store' });
